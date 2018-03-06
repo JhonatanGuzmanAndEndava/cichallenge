@@ -18,7 +18,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'docker start testcontainer'
+                sh 'docker run -i --rm jhjguzmanri/helloworldnode:1.0 npm test'
             }
         }
         stage('Push') {
