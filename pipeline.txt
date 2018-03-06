@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Prepare') {
+            steps {
+                echo 'Preparing..'
+                git branch: 'master', url: 'https://github.com/JhonatanGuzmanAndEndava/cichallenge.git'
+                //checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh 'docker build -t jhjguzmanri/helloworldnode:1.0 .'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                sh 'docker start testcontainer'
+            }
+        }
+        stage('Push') {
+            steps {
+                echo 'Pushing..'
+                withCredentials([usernamePassword(credentialsId: '3eadbbb2-9d22-4d2e-b2dd-a8b493c7d322', passwordVariable: 'PASS', usernameVariable: 'USER')]) 
+                {
+                    sh 'docker login -u $USER -p $PASS'
+                    sh 'docker tag $USER/helloworldnode:1.0 $USER/helloworldnode'
+                    sh 'docker push $USER/helloworldnode:1.0'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+                //Be sure container is not running before execute pipeline
+                sh 'docker run -d --rm --name friendlyname -p 8000:8000 jhjguzmanri/helloworldnode:1.0'
+                input "Do you want to terminate docker container?"
+                sh 'docker stop friendlyname'
+            }
+        }
+    }
+}
