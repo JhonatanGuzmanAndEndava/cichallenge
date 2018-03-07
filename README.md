@@ -36,3 +36,5 @@ an image and then deploy it.
 - https://www.docker.com/use-cases/cicd
 
 - https://github.com/jenkinsci/pipeline-examples
+
+- https://www.youtube.com/watch?v=WWcijE7ifcA&list=PLzvRQMJ9HDiSaisKr7OnM4Fl7JXCDDcmt
